@@ -1,7 +1,6 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #c9cfcf;
-  /* background: #f9f9f9; */
   color: #333;
   margin: 0;
   padding: 0;
@@ -14,14 +13,14 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('back.jpg');
+  background-image: url('../img/back.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.85; /* تقليل شفافية الصورة */
+  opacity: 0.85;
   transition: opacity 0.5s ease;
-  z-index: -1; /* وضع الصورة خلف العناصر الأخرى */
-  display: block; /* بداية الصورة ستكون ظاهرة */
+  z-index: -1; 
+  display: block; 
 }
 
 
@@ -35,7 +34,6 @@ body {
 h2 {
   text-align: center;
   color: #eaefef;
-  /* color: #005f73; */
 }
 
 ul {
@@ -51,22 +49,11 @@ ul {
   margin: 10px 0;
   margin-right: 55px;
 }
-/* input[type="text"] {
-  width: 70%;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin: 10px 0;
-  margin-right: 55px;
-} */
  /* تغيير التنسيق عند وجود خطأ في إدخال المدينة */
 #cityInput.error {
   border-color: red; 
   background-color: #fce7e7; 
 }
-
-
 input:hover {
   border-color: #005f73;
   box-shadow: 0 0 5px #005f73;
@@ -94,7 +81,8 @@ button:hover {
   display: none;
   text-align: center;
   font-size: 18px;
-  color: #3498db;
+  font-weight: bold;
+  color: white;
   margin-top: 20px;
 }
 /* تنسيق عنوان الفئات */
@@ -116,7 +104,7 @@ button:hover {
   max-width: 800px;
   position: relative;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  overflow: hidden;/* منع العناصر من الخروج خارج البطاقة */
+  overflow: hidden;
   transition: transform 0.3s ease;
 }
 
@@ -133,7 +121,7 @@ button:hover {
   width: 8px;
   height: 100%;
   background: linear-gradient(to bottom, #005f73, #ff6ec4, #f39c12,#007b7f);
-  border-top-right-radius: 12px;/*  زوايا مستديرة في الأعلى والاسفل*/
+  border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
 }
 /* تنسيق الرابط داخل البطاقة */

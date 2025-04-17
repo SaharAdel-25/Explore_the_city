@@ -4,7 +4,7 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>دليلك لاستكشاف مدينتك</title>
-      <link rel="stylesheet" href="style.css">
+      <link rel="stylesheet" href="styelsfile/style.css">
     </head>
     <body>
       <div class="background"></div> <!-- للصورة الخلفية -->
@@ -12,7 +12,7 @@
         <h2 id="title"> اكتشف ما حولك في ثوانٍ!</h2>
         <div>
           <input type="text" id="cityInput" list="cities" placeholder="اكتب اسم المدينة لاستكشاف الأماكن فيها" title="انقر مرتين لحذف المحتوى"/>
-          <button onclick="searchPlaces()" >بحث</button>
+          <button onclick="searchPlaces()"> بحث</button>
           <datalist id="cities">
             <option value="جدة">
             <option value="الرياض">
@@ -23,10 +23,10 @@
             <option value="Italy">
           </datalist>
         </div>
-        <div id="loading" >جارٍ تحميل البيانات...</div>
+        <div id="loading" >جارٍ تحميل البيانات... <br>قد يستغرق الأمر بعض الوقت، يرجى الانتظار</div>
         <div id="resultContainer"></div>
       </div>
     
-      <script src="script.js"></script>
+      <script src="jsfile/script.js"></script>
     </body>
     </html>

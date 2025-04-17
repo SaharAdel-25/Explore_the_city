@@ -126,17 +126,21 @@ const apiKey = '9f019e41c8724efa81209eaea290154a';//مفتاح الـ API
   function hideBackgroundAndChangeTitleColor() {
     const background = document.querySelector('.background');
     const title1 = document.querySelector('#title');
+    const loadingM = document.querySelector('#loading');
+
     // إخفاء الصورة تمامًا
     background.style.display = 'none';
-    title1.style.color = '#005f73';  
+    title1.style.color = '#005f73'; 
+    loadingM.style.color = '#005f73';  
   }
-  
   // دالة لإظهار الصورة الخلفية وإرجاع لون العنوان إلى الأبيض
   function showBackgroundAndResetTitleColor() {
     const background = document.querySelector('.background');
     const title1 = document.querySelector('#title');
+    const loadingM = document.querySelector('#loading');
     // إظهار الصورة الخلفية
     background.style.display = 'block';
-    // إعادة لون العنوان إلى اللون الأبيض
+    // إعادة اللون إلى اللون الأبيض
     title1.style.color = 'white';  
+    loadingM.style.color = 'white';  
   }
