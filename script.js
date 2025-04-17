@@ -110,6 +110,7 @@ const apiKey = '9f019e41c8724efa81209eaea290154a';//مفتاح الـ API
   if (!hasResults) {
     showBackgroundAndResetTitleColor(); 
     const noResultsMessage = document.createElement('p');
+    noResultsMessage.style.color= '#f0f2f2';
     noResultsMessage.textContent = "عذرًا، لم نتمكن من العثور على أي أماكن في هذه الفئات";
     resultContainer.appendChild(noResultsMessage);
   }

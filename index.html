@@ -11,8 +11,17 @@
       <div class="container">
         <h2 id="title"> اكتشف ما حولك في ثوانٍ!</h2>
         <div>
-          <input type="text" id="cityInput" placeholder="ابحث عن الأماكن في مدينتك" title="انقر مرتين لحذف المحتوى"/>
+          <input type="text" id="cityInput" list="cities" placeholder="اكتب اسم المدينة لاستكشاف الأماكن فيها" title="انقر مرتين لحذف المحتوى"/>
           <button onclick="searchPlaces()" >بحث</button>
+          <datalist id="cities">
+            <option value="جدة">
+            <option value="الرياض">
+            <option value="مكة">
+            <option value="الدمام">
+            <option value="الطائف">
+            <option value="France">
+            <option value="Italy">
+          </datalist>
         </div>
         <div id="loading" >جارٍ تحميل البيانات...</div>
         <div id="resultContainer"></div>

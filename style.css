@@ -1,6 +1,7 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f9f9f9;
+  background: #c9cfcf;
+  /* background: #f9f9f9; */
   color: #333;
   margin: 0;
   padding: 0;
@@ -153,12 +154,28 @@ button:hover {
 }
 /* تنسيق للشاشات */
 @media (max-width: 600px) {
-  input[type="text"] {
-    width: 100%;
+  #cityInput{
+    width: 65%;
   }
 
   button {
-    width: 100%;
+    width: 12%;
     margin-top: 10px;
+    padding: 12px 12px;
+  }
+  .category-title{
+    margin-right: 10px;
+  }
+  .card{
+    width: 80%;
   }
 }
+
+@media (max-width: 950px) {
+
+  .card{
+    width: 88%;
+  }
+
+}
+
