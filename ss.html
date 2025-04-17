@@ -1,0 +1,345 @@
+const apiKey = '9f019e41c8724efa81209eaea290154a';
+
+document.getElementById('cityInput').addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    searchPlaces();  
+  }
+});
+
+document.querySelector('input').addEventListener('dblclick', () => {
+  document.querySelector('input').value = ''; 
+});
+
+document.querySelector('input').addEventListener('mouseover', () => {
+    document.querySelector('input').focus();
+});
+
+
+async function searchPlaces() {
+const city = document.getElementById('cityInput').value;
+const resultContainer = document.getElementById('resultContainer');
+const loadingMessage = document.getElementById('loading');
+
+resultContainer.innerHTML = ''; // مسح النتائج القديمة
+loadingMessage.style.display = 'block'; // عرض رسالة التحميل
+
+if (!city) {
+alert("الرجاء إدخال اسم المدينة");
+loadingMessage.style.display = 'none'; // إخفاء النص بعد انتهاء التحميل في حالة عدم وجود المدينة
+
+return;
+}
+
+try {
+const geoRes = await fetch(`https://api.geoapify.com/v1/geocode/search?text=${city}&apiKey=${apiKey}`);
+const geoData = await geoRes.json();
+
+if (!geoData.features.length) {
+alert("لم يتم العثور على المدينة.");
+loadingMessage.style.display = 'none'; // إخفاء رسالة التحميل
+return;
+}
+
+const lat = geoData.features[0].geometry.coordinates[1];
+const lon = geoData.features[0].geometry.coordinates[0];
+
+const categories = [
+{ key: 'catering.restaurant', title: '🍽️ المطاعم', class: 'restaurant'},
+{ key: 'entertainment', title: '🎉 الترفيه' , class: 'entertainment' },
+{ key: 'building.commercial', title: '🏢 المباني التجارية', class: 'building' },
+];
+
+let hasResults = false; // لتتبع إذا كانت هناك أماكن
+
+for (const category of categories) {
+const apiUrl = `https://api.geoapify.com/v2/places?categories=${category.key}&filter=circle:${lon},${lat},7000&limit=5&apiKey=${apiKey}`;
+const res = await fetch(apiUrl);
+const data = await res.json();
+const places = data.features;
+
+if (places.length > 0) {
+const title = document.createElement('h3');
+title.className = 'category-title';
+title.textContent = category.title;
+resultContainer.appendChild(title);
+
+places.forEach(place => {
+  const name = place.properties.name || 'اسم غير متوفر';
+  const address = place.properties.formatted || 'عنوان غير متوفر';
+  const category = place.properties.categories[1] || 'فئة غير متوفرة'; // عرض الفئة الفرعية
+  const openingHours = place.properties.opening_hours || 'غير متوفرة';
+  const cuisine = (place.properties.catering && place.properties.catering.cuisine) || 'غير محدد';
+
+  const card = document.createElement('div');
+  const categoryClass = category.toLowerCase().replace(/\s+/g, '-');  // لتحويل الفئة إلى lowercase وتغيير الفراغات إلى شرطات
+    
+  const cuisineList = cuisine.split(';');
+  const type = category === 'building.commercial' ? `<strong>النوع:</strong> ${place.properties.type || 'غير محدد'}<br>` : '';
+  const formattedCuisine = cuisineList.map(item => `<li>${item}</li>`).join('');
+  card.className = `card ${categoryClass}`
+
+  card.innerHTML = `
+    <div class="card-content">
+      <strong>الاسم:</strong> ${name} <br>
+      <strong>العنوان:</strong> ${address} <br>
+      <strong>الفئة:</strong> ${category} <br>
+      ${category === 'catering.restaurant' ? `
+      <strong>أوقات العمل:</strong> ${openingHours}<br>
+      <strong>نوع المأكولات:</strong> <ul>${formattedCuisine}</ul>` : ''}    ${category.key === 'building.commercial' ? `<strong>أوقات العمل:</strong> ${openingHours}<br>` : ''}
+      ${category === 'building.commercial' ? `
+      <strong>أوقات العمل:</strong> ${openingHours}<br>` : ''}
+      ${type}      <a href="https://www.google.com/maps/search/?api=1&query=${place.geometry.coordinates[1]},${place.geometry.coordinates[0]}" target="_blank">عرض على الخريطة</a>
+    </div>
+      `;
+  resultContainer.appendChild(card);
+});
+
+hasResults = true; // تم العثور على أماكن في هذه الفئة
+}
+}
+
+if (!hasResults) {
+// إذا لم يتم العثور على أي أماكن في أي فئة، أظهر رسالة للمستخدم
+const noResultsMessage = document.createElement('p');
+noResultsMessage.textContent = "لا توجد أماكن في هذه الفئات.";
+resultContainer.appendChild(noResultsMessage);
+}
+
+} catch (error) {
+console.error(error);
+alert("حدث خطأ أثناء تحميل البيانات.");
+} finally {
+loadingMessage.style.display = 'none'; // إخفاء رسالة التحميل بعد الانتهاء
+}
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     <!-- <!DOCTYPE html>
+
+     <html lang="ar" dir="rtl">
+     <head>
+       <meta charset="UTF-8">
+       <title>استكشاف المدينة</title>
+       <style>
+         body {
+           font-family: 'Segoe UI', sans-serif;
+           background: #f0f4f8;
+           color: #222;
+           margin: 0;
+           padding: 0;
+         }
+     
+         .container {
+           max-width: 900px;
+           margin: 40px auto;
+           padding: 20px;
+         }
+     
+         h2 {
+           text-align: center;
+           color: #2c3e50;
+           margin-bottom: 30px;
+         }
+     
+         input[type="text"] {
+           width: 65%;
+           padding: 12px;
+           border: 2px solid #ccc;
+           border-radius: 10px;
+           font-size: 16px;
+         }
+     
+         button {
+           padding: 12px 18px;
+           background-color: #16a085;
+           color: white;
+           border: none;
+           border-radius: 10px;
+           font-size: 16px;
+           cursor: pointer;
+           margin-right: 10px;
+         }
+     
+         button:hover {
+           background-color: #138d75;
+         }
+     
+         .category-title {
+           margin-top: 40px;
+           font-size: 24px;
+           color: #34495e;
+           position: relative;
+         }
+     
+         .category-title::before {
+           content: '';
+           position: absolute;
+           right: 0;
+           bottom: -6px;
+           width: 40px;
+           height: 3px;
+           background-color: #16a085;
+           border-radius: 5px;
+         }
+     
+         .card {
+           background-color: #ffffff;
+           border-radius: 14px;
+           padding: 18px 20px;
+           margin: 18px 0;
+           box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+           border-right: 6px solid #ccc;
+           transition: transform 0.3s;
+         }
+     
+         .card:hover {
+           transform: scale(1.02);
+         }
+     
+         .card.entertainment {
+           border-color: #f39c12;
+         }
+     
+         .card.restaurant {
+           border-color: #e74c3c;
+         }
+     
+         .card.building {
+           border-color: #2980b9;
+         }
+     
+         .card strong {
+           color: #333;
+         }
+     
+         a {
+           color: #3498db;
+           text-decoration: none;
+         }
+     
+         a:hover {
+           text-decoration: underline;
+         }
+     
+         #loading {
+           display: none;
+           text-align: center;
+           font-size: 18px;
+           color: #16a085;
+           margin-top: 20px;
+         }
+     
+         @media (max-width: 600px) {
+           input[type="text"], button {
+             width: 100%;
+             margin-top: 10px;
+           }
+         }
+       </style>
+     </head>
+     <body>
+     
+       <div class="container">
+         <h2>اكتشف الأماكن في مدينتك</h2>
+     
+         <input type="text" id="cityInput" placeholder="اكتب اسم المدينة" />
+         <button onclick="searchPlaces()">بحث</button>
+     
+         <div id="loading">جارٍ تحميل البيانات...</div>
+         <div id="resultContainer"></div>
+       </div>
+     
+       <script>
+         const apiKey = '9f019e41c8724efa81209eaea290154a';
+     
+         async function searchPlaces() {
+           const city = document.getElementById('cityInput').value;
+           const resultContainer = document.getElementById('resultContainer');
+           const loadingText = document.getElementById('loading');
+           resultContainer.innerHTML = '';
+           loadingText.style.display = 'block'; // إظهار النص أثناء التحميل
+     
+           if (!city) {
+             alert("الرجاء إدخال اسم المدينة");
+             loadingText.style.display = 'none'; // إخفاء النص بعد انتهاء التحميل في حالة عدم وجود المدينة
+             return;
+           }
+     
+           try {
+             const geoRes = await fetch(`https://api.geoapify.com/v1/geocode/search?text=${city}&apiKey=${apiKey}`);
+             const geoData = await geoRes.json();
+     
+             if (!geoData.features.length) {
+               alert("لم يتم العثور على المدينة.");
+               loadingText.style.display = 'none'; // إخفاء النص بعد انتهاء التحميل
+               return;
+             }
+     
+             const lat = geoData.features[0].geometry.coordinates[1];
+             const lon = geoData.features[0].geometry.coordinates[0];
+     
+             const categories = [
+               { key: 'entertainment', title: '🎉 الترفيه', class: 'entertainment' },
+               { key: 'catering.restaurant', title: '🍽️ المطاعم', class: 'restaurant' },
+               { key: 'building.commercial', title: '🏢 المباني التجارية', class: 'building' },
+             ];
+     
+             for (const category of categories) {
+               const apiUrl = `https://api.geoapify.com/v2/places?categories=${category.key}&filter=circle:${lon},${lat},7000&limit=5&apiKey=${apiKey}`;
+               const res = await fetch(apiUrl);
+               const data = await res.json();
+               const places = data.features;
+     
+               if (places.length > 0) {
+                 const title = document.createElement('h3');
+                 title.className = 'category-title';
+                 title.textContent = category.title;
+                 resultContainer.appendChild(title);
+               }
+     
+               places.forEach(place => {
+                 const name = place.properties.name || 'غير متوفر';
+                 const address = place.properties.formatted || 'غير متوفر';
+                 const openingHours = place.properties.opening_hours || 'غير متوفرة';
+                 const cuisine = (place.properties.categories && place.properties.categories[1]) || 'غير محدد';
+     
+                 const card = document.createElement('div');
+                 card.className = `card ${category.class}`;
+     
+                 card.innerHTML = `
+                   <strong>الاسم:</strong> ${name} <br>
+                   <strong>العنوان:</strong> ${address} <br>
+                   ${category.key === 'catering.restaurant' ? `<strong>أوقات العمل:</strong> ${openingHours}<br><strong>نوع المأكولات:</strong> ${cuisine}<br>` : ''}
+                   ${category.key === 'building.commercial' ? `<strong>أوقات العمل:</strong> ${openingHours}<br>` : ''}
+                   <a href="https://www.google.com/maps/search/?api=1&query=${place.geometry.coordinates[1]},${place.geometry.coordinates[0]}" target="_blank">عرض على الخريطة</a>
+                 `;
+     
+                 resultContainer.appendChild(card);
+               });
+             }
+           } catch (error) {
+             console.error(error);
+             alert("حدث خطأ أثناء جلب البيانات.");
+           } finally {
+             loadingText.style.display = 'none'; // إخفاء النص بعد تحميل البيانات
+           }
+         }
+       </script>
+     
+     </body>
+     </html>
+      -->
+
+      
