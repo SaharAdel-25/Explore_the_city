@@ -38,83 +38,84 @@ const apiKey = '9f019e41c8724efa81209eaea290154a';//مفتاح الـ API
   }
 
   try {
-    //لاحضار احداثيات المدينة من geoapify
-  const responseGeo = await fetch(`https://api.geoapify.com/v1/geocode/search?text=${city}&apiKey=${apiKey}`);
-  const cityData = await responseGeo.json();// تحويل البيانات
+      //لاحضار احداثيات المدينة من geoapify
+    const responseGeo = await fetch(`https://api.geoapify.com/v1/geocode/search?text=${city}&apiKey=${apiKey}`);
+    if (!responseGeo.ok) throw new Error("فشل في جلب بيانات المدينة");
+    const cityData = await responseGeo.json();// تحويل البيانات
 
-  if (!cityData.features.length) {
-    showBackgroundAndResetTitleColor(); 
-    alert("عذرًا، لم نتمكن من العثور على المدينة.");
-    loadingMessage.style.display = 'none'; // إخفاء رسالة التحميل
-  return;
-  }
-  // استخراج احداثيات  خط الطول والعرض  
-  const lat = cityData.features[0].geometry.coordinates[1];
-  const lon = cityData.features[0].geometry.coordinates[0];
-
-  const categories = [
-  { key: 'catering.restaurant', title: '🍽️ المطاعم', class: 'restaurant'},
-  { key: 'entertainment', title: '🎉 الترفيه' , class: 'entertainment' },
-  { key: 'building.commercial', title: '🏢 المباني التجارية', class: 'building' },
-  ];
-
-  let hasResults = false; // لتتبع إذا كانت هناك أماكن  في الفئات 
-
-  for (const category of categories) {
-    const apiUrl = `https://api.geoapify.com/v2/places?categories=${category.key}&filter=circle:${lon},${lat},7000&limit=5&apiKey=${apiKey}`;//5 فقط يتم عرضها 
-    const resp = await fetch(apiUrl);
-    const data = await resp.json();
-    const places = data.features;
-    // التحقق من وجود أماكن
-    if (places.length > 0) {
-      const title = document.createElement('h3');
-      title.className = 'category-title';
-      title.textContent = category.title;
-      resultContainer.appendChild(title);//إضافة عنوان 
-
-    places.forEach(place => {//عرض المعلومات
-      const name = place.properties.name || 'لا يوجد اسم';
-      const address = place.properties.formatted || 'لا يوجد عنوان';
-      const category = place.properties.categories[1] || 'فئة غير متوفرة';
-      const openingHours = place.properties.opening_hours || 'أوقات العمل غير متوفرة';
-      const cuisine = (place.properties.catering && place.properties.catering.cuisine) || 'نوع المأكولات غير محدد';
-      
-      const card = document.createElement('div');//إنشاء بطاقة 
-      const categoryClass = category.toLowerCase().replace(/\s+/g, '-');  // لتحويل الفئة إلى lowercase وتغيير الفراغات إلى شرطات
-      const cuisineList = cuisine.split(';');
-      const formattedCuisine = cuisineList.map(item => `<li>${item}</li>`).join('');// تحويل كل نوع من المأكولات إلى عنصر <li> باستخدام .map() ثم يتم دمجها
-      const type = category === 'building.commercial' ? `<strong>النوع:</strong> ${place.properties.type || ' غير متوفر'}<br>` : '';//إضافة نوع المكان
-      card.className = `card ${categoryClass}`
-      //إنشاء محتوى البطاقة
-      card.innerHTML = `
-        <div class="card-content">
-          <strong>الاسم:</strong> ${name} <br>
-          <strong>العنوان:</strong> ${address} <br>
-          <strong>الفئة:</strong> ${category} <br>
-          ${category === 'catering.restaurant' ? `
-          <strong>أوقات العمل:</strong> ${openingHours}<br>
-          <strong>نوع المأكولات:</strong> <ul>${formattedCuisine}</ul>` : ''}
-          ${category.key === 'building.commercial' ? `<strong>أوقات العمل:</strong> ${openingHours}<br>` : ''}
-          ${type}
-          <a href="https://www.google.com/maps/search/?api=1&query=${place.geometry.coordinates[1]},${place.geometry.coordinates[0]}" target="_blank">عرض على الخريطة</a>
-        </div>
-          `;
-          hideBackgroundAndChangeTitleColor();
-      resultContainer.appendChild(card);//إضافة البطاقة 
-    });
-
-    hasResults = true; // تم العثور على أماكن في هذه الفئة
+    if (!cityData.features.length) {
+      showBackgroundAndResetTitleColor(); 
+      alert("عذرًا، لم نتمكن من العثور على المدينة.");
+      loadingMessage.style.display = 'none'; // إخفاء رسالة التحميل
+    return;
     }
-  }
-  //عدم العثور على أي أماكن في الفئات 
-  if (!hasResults) {
-    showBackgroundAndResetTitleColor(); 
-    const noResultsMessage = document.createElement('p');
-    noResultsMessage.style.color= '#f0f2f2';
-    noResultsMessage.textContent = "عذرًا، لم نتمكن من العثور على أي أماكن في هذه الفئات";
-    resultContainer.appendChild(noResultsMessage);
-  }
+    // استخراج احداثيات  خط الطول والعرض  
+    const lat = cityData.features[0].geometry.coordinates[1];
+    const lon = cityData.features[0].geometry.coordinates[0];
 
+    const categories = [
+    { key: 'catering.restaurant', title: '🍽️ المطاعم', class: 'restaurant'},
+    { key: 'entertainment', title: '🎉 الترفيه' , class: 'entertainment' },
+    { key: 'building.commercial', title: '🏢 المباني التجارية', class: 'building' },
+    ];
+
+    let hasResults = false; // لتتبع إذا كانت هناك أماكن  في الفئات 
+
+    for (const category of categories) {
+      const apiUrl = `https://api.geoapify.com/v2/places?categories=${category.key}&filter=circle:${lon},${lat},7000&limit=5&apiKey=${apiKey}`;//5 فقط يتم عرضها 
+      const resp = await fetch(apiUrl);
+      if (!resp.ok) throw new Error("فشل في جلب بيانات الأماكن");
+      const data = await resp.json();
+      const places = data.features;
+      // التحقق من وجود أماكن
+      if (places.length > 0) {
+        const title = document.createElement('h3');
+        title.className = 'category-title';
+        title.textContent = category.title;
+        resultContainer.appendChild(title);//إضافة عنوان 
+
+      places.forEach(place => {//عرض المعلومات
+        const name = place.properties.name || 'لا يوجد اسم';
+        const address = place.properties.formatted || 'لا يوجد عنوان';
+        const category = place.properties.categories[1] || 'فئة غير متوفرة';
+        const openingHours = place.properties.opening_hours || 'أوقات العمل غير متوفرة';
+        const cuisine = (place.properties.catering && place.properties.catering.cuisine) || 'نوع المأكولات غير محدد';
+        
+        const card = document.createElement('div');//إنشاء بطاقة 
+        const categoryClass = category.toLowerCase().replace(/\s+/g, '-');  // لتحويل الفئة إلى lowercase وتغيير الفراغات إلى شرطات
+        const cuisineList = cuisine.split(';');
+        const formattedCuisine = cuisineList.map(item => `<li>${item}</li>`).join('');// تحويل كل نوع من المأكولات إلى عنصر <li> باستخدام .map() ثم يتم دمجها
+        const type = category === 'building.commercial' ? `<strong>النوع:</strong> ${place.properties.type || ' غير متوفر'}<br>` : '';//إضافة نوع المكان
+        card.className = `card ${categoryClass}`
+        //إنشاء محتوى البطاقة
+        card.innerHTML = `
+          <div class="card-content">
+            <strong>الاسم:</strong> ${name} <br>
+            <strong>العنوان:</strong> ${address} <br>
+            <strong>الفئة:</strong> ${category} <br>
+            ${category === 'catering.restaurant' ? `
+            <strong>أوقات العمل:</strong> ${openingHours}<br>
+            <strong>نوع المأكولات:</strong> <ul>${formattedCuisine}</ul>` : ''}
+            ${category.key === 'building.commercial' ? `<strong>أوقات العمل:</strong> ${openingHours}<br>` : ''}
+            ${type}
+            <a href="https://www.google.com/maps/search/?api=1&query=${place.geometry.coordinates[1]},${place.geometry.coordinates[0]}" target="_blank">عرض على الخريطة</a>
+          </div>
+            `;
+            hideBackgroundAndChangeTitleColor();
+        resultContainer.appendChild(card);//إضافة البطاقة 
+      });
+
+      hasResults = true; // تم العثور على أماكن في هذه الفئة
+      }
+    }
+    //عدم العثور على أي أماكن في الفئات 
+    if (!hasResults) {
+      showBackgroundAndResetTitleColor(); 
+      const noResultsMessage = document.createElement('p');
+      noResultsMessage.style.color= '#f0f2f2';
+      noResultsMessage.textContent = "عذرًا، لم نتمكن من العثور على أي أماكن في هذه الفئات";
+      resultContainer.appendChild(noResultsMessage);
+    }
   } catch (error) {
     console.error(error);
     alert("حدث مشكلة أثناء تحميل البيانات. الرجاء المحاولة مرة اخرى.");//إظهار تنبيه 
