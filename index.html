@@ -1,0 +1,23 @@
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>دليلك لاستكشاف مدينتك</title>
+      <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+      <div class="background"></div> <!-- للصورة الخلفية -->
+      <div class="container">
+        <h2 id="title"> اكتشف ما حولك في ثوانٍ!</h2>
+        <div>
+          <input type="text" id="cityInput" placeholder="ابحث عن الأماكن في مدينتك" title="انقر مرتين لحذف المحتوى"/>
+          <button onclick="searchPlaces()" >بحث</button>
+        </div>
+        <div id="loading" >جارٍ تحميل البيانات...</div>
+        <div id="resultContainer"></div>
+      </div>
+    
+      <script src="script.js"></script>
+    </body>
+    </html>
