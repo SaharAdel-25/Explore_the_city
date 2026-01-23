@@ -1,6 +1,6 @@
 
 
-const apiKey = '9f019e41c8724efa81209eaea290154a';//مفتاح الـ API
+const apiKey = 'key';//مفتاح الـ API
 //اضافة event عند النقر على enter 
   document.getElementById('cityInput').addEventListener('keydown', function(event) {
   if (event.key === 'Enter') {
